@@ -1,6 +1,6 @@
 import de.bezier.guido.*;
-public int NUM_ROWS = 5;
-public int NUM_COLS = 5;
+public int NUM_ROWS = 8;
+public int NUM_COLS = 8;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> mines = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
 
@@ -14,13 +14,15 @@ void setup ()
     
     //your code to initialize buttons goes here
     buttons = new MSButton[NUM_ROWS][NUM_COLS];
-    for(int i = 0; i < NUM_ROWS; i ++){
-        for(int e = 0; e < NUM_COLS; e ++){
-            buttons[i][e] = new MSButton(i, e);
+    for(int r = 0; r < NUM_ROWS; r ++){
+        for(int c = 0; c < NUM_COLS; c ++){
+            buttons[r][c] = new MSButton(r, c);
         }
     }
 
-    setMines();
+    for(int i = 0; i < 10; i++){
+        setMines();
+    }
 }
 public void setMines()
 {
@@ -40,20 +42,32 @@ public void draw ()
 }
 public boolean isWon()
 {
-    //your code here
-    return false;
+    for(int i = 0 ; i < mines.size(); i++){
+        if(mines.get(i).isFlagged() == false){
+            return false;
+        }
+    }
+    return true;
 }
 public void displayLosingMessage()
 {
-    //your code here
+    for(int r = 0; r < NUM_ROWS; r ++){
+        for(int c = 0; c < NUM_COLS; c ++){
+            buttons[r][c].setLabel("Lose");
+        }
+    }
 }
 public void displayWinningMessage()
 {
-    //your code here
+    for(int r = 0; r < NUM_ROWS; r ++){
+        for(int c = 0; c < NUM_COLS; c ++){
+            buttons[r][c].setLabel("Win");
+        }
+    }
 }
 public boolean isValid(int r, int c)
 {
-    if(r > 0 && r < NUM_ROWS && c > 0 && c < NUM_COLS){
+    if(r >= 0 && r < NUM_ROWS && c >= 0 && c < NUM_COLS){
         return true;
     }
     return false;
@@ -66,15 +80,17 @@ public int countMines(int row, int col)
         numMines --;
     }
 
-    for(int i = row-1; i <= row+1; i ++){
-        for(int e = col-1; e <= col+1; e ++){
-                if(mines.contains(buttons[i][e])){
+    for(int r = row-1; r <= row+1; r ++){
+        for(int c = col-1; c <= col+1; c ++){
+            if(isValid(r,c) && mines.contains(buttons[r][c])){
                 numMines++;
             }
         }
     }
+
     return numMines;
 }
+
 public class MSButton
 {
     private int myRow, myCol;
