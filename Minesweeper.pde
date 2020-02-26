@@ -1,7 +1,7 @@
 import de.bezier.guido.*;
 public int NUM_ROWS = 10;
 public int NUM_COLS = 10;
-private boolean WL = true;
+private boolean allowClick = true;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> mines = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
 
@@ -65,7 +65,7 @@ public void displayLosingMessage()
             }
         }
     }
-    WL = false;
+    allowClick = false;
 }
 public void displayWinningMessage()
 {
@@ -78,6 +78,7 @@ public void displayWinningMessage()
             }
         }
     }
+    allowClick = false;
 }
 public boolean isValid(int r, int c)
 {
@@ -128,7 +129,7 @@ public class MSButton
     // called by manager
     public void mousePressed () 
     {
-        if(WL == false){
+        if(allowClick == false){
         }else if(clicked == false && mouseButton == RIGHT){
             flagged = !flagged;
             clicked = false;
