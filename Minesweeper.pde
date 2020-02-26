@@ -1,6 +1,7 @@
 import de.bezier.guido.*;
-public int NUM_ROWS = 8;
-public int NUM_COLS = 8;
+public int NUM_ROWS = 10;
+public int NUM_COLS = 10;
+private boolean WL = true;
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> mines = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
 
@@ -20,7 +21,7 @@ void setup ()
         }
     }
 
-    for(int i = 0; i < 10; i++){
+    for(int i = 0; i < (NUM_COLS*NUM_ROWS)/ 10; i++){
         setMines();
     }
 }
@@ -44,7 +45,9 @@ public boolean isWon()
 {
     for(int r = 0 ; r < buttons.length; r++){
         for(int c = 0; c < buttons[r].length; c++){
-            if(buttons[r][c].clicked == false){
+            if(!mines.contains(buttons[r][c]) && buttons[r][c].clicked == false){
+                return false;
+            }else if(mines.contains(buttons[r][c]) && buttons[r][c].flagged == false){
                 return false;
             }
         }
@@ -56,14 +59,23 @@ public void displayLosingMessage()
     for(int r = 0; r < NUM_ROWS; r ++){
         for(int c = 0; c < NUM_COLS; c ++){
             buttons[r][c].setLabel("Lose");
+            buttons[r][c].flagged = false;
+            if(mines.contains(buttons[r][c])){
+                buttons[r][c].clicked = true;
+            }
         }
     }
+    WL = false;
 }
 public void displayWinningMessage()
 {
     for(int r = 0; r < NUM_ROWS; r ++){
         for(int c = 0; c < NUM_COLS; c ++){
             buttons[r][c].setLabel("Win");
+            buttons[r][c].flagged = false;
+            if(mines.contains(buttons[r][c])){
+                buttons[r][c].clicked = true;
+            }
         }
     }
 }
@@ -116,7 +128,8 @@ public class MSButton
     // called by manager
     public void mousePressed () 
     {
-        if(clicked == false && mouseButton == RIGHT){
+        if(WL == false){
+        }else if(clicked == false && mouseButton == RIGHT){
             flagged = !flagged;
             clicked = false;
         }else if(mines.contains(this)){
