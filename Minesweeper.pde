@@ -1,13 +1,18 @@
 import de.bezier.guido.*;
 public int NUM_ROWS = 10;
 public int NUM_COLS = 10;
+public String levelN = "";
+
 private boolean allowClick = true;
+private boolean enterBool = false;
+private boolean firstClick = true;
+
 private MSButton[][] buttons; //2d array of minesweeper buttons
 private ArrayList <MSButton> mines = new ArrayList <MSButton>(); //ArrayList of just the minesweeper buttons that are mined
 
 void setup ()
 {
-    size(400, 400);
+    size(400, 450);
     textAlign(CENTER,CENTER);
     
     // make the manager
@@ -38,6 +43,9 @@ public void setMines()
 public void draw ()
 {
     background( 0 );
+    fill(255);
+    textSize(25);
+    text("Level: " + levelN, 200, 420);
     if(isWon() == true)
         displayWinningMessage();
 }
@@ -129,6 +137,14 @@ public class MSButton
     // called by manager
     public void mousePressed () 
     {
+        if(firstClick == true){
+            firstClick = false;
+            if(mines.contains(this)){
+                setMines();
+                mines.remove(buttons[myRow][myCol]);
+            }
+        }
+
         if(allowClick == false){
         }else if(clicked == false && mouseButton == RIGHT){
             flagged = !flagged;
@@ -163,6 +179,7 @@ public class MSButton
 
         rect(x, y, width, height);
         fill(0);
+        textSize(12);
         text(myLabel,x+width/2,y+height/2);
     }
     public void setLabel(String newLabel)
@@ -176,5 +193,36 @@ public class MSButton
     public boolean isFlagged()
     {
         return flagged;
+    }
+}
+
+
+public void keyPressed(){
+    if(key >= '0' && key <= '9' && enterBool == false){
+        levelN += key;
+    }else if(key == '\n'){
+        if(Integer.parseInt(levelN) >= 5 && Integer.parseInt(levelN) <= 20){
+            NUM_ROWS = Integer.parseInt(levelN);
+            NUM_COLS = Integer.parseInt(levelN);
+        }
+        levelN = "";
+        background(0);
+        
+
+        buttons = new MSButton[NUM_ROWS][NUM_COLS];
+        for(int r = 0; r < NUM_ROWS; r ++){
+            for(int c = 0; c < NUM_COLS; c ++){
+                buttons[r][c] = new MSButton(r, c);
+            }
+        }
+
+        for(int i = 0; i < mines.size(); i++){
+            mines.remove(i);
+            i--;
+        }
+
+        for(int i = 0; i < (NUM_COLS*NUM_ROWS)/ 10; i++){
+            setMines();
+        }
     }
 }
